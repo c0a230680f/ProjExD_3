@@ -153,6 +153,25 @@ class Score:
         screen.blit(self.img,[100,HEIGHT-50])
 
 
+class Explosion:
+    def __init__(self, center):
+        self.explosion_images = []
+        self.explosion_images.append(pg.image.load('explosion.gif').convert_alpha())
+        self.explosion_images.append(pg.transform.flip(self.explosion_images[0], True, False))
+        self.explosion_images.append(pg.transform.flip(self.explosion_images[0], False, True))  # 上下反転
+        self.explosion_images.append(pg.transform.flip(self.explosion_images[1], False, True))  # 上下反転 + 左右反転
+
+        self.rect = self.explosion_images[0].get_rect()
+        self.rect.center = center
+        self.life = 30  # 爆発時間
+    
+    def update(self):
+        self.life -= 1
+
+    def draw(self, screen):
+        current_frame = (self.life // 5) % 4  # 0から3までを交互に切り替え
+        screen.blit(self.explosion_images[current_frame], self.rect)
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
@@ -164,6 +183,8 @@ def main():
     clock = pg.time.Clock()
     tmr = 0
     score = Score()
+    explosion = Explosion()
+    explosions = []
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -192,6 +213,12 @@ def main():
                     beam = None
                     bird.change_img(6, screen)
         bombs = [bomb for bomb in bombs if bomb is not ModuleNotFoundError]
+
+        for explosion in explosions[:]:  # スライスを使ってコピーしてループする（削除処理に影響しないため）
+            explosion.update()
+            explosion.draw(screen)
+            if explosion.life <= 0:
+                explosions.remove(explosion)
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
