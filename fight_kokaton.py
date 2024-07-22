@@ -153,7 +153,7 @@ class Score:
         screen.blit(self.img,[100,HEIGHT-50])
 
 
-class Explosion:
+class Explosion:  # 追加機能3(途中)
     def __init__(self, center):
         self.explosion_images = []
         self.explosion_images.append(pg.image.load('explosion.gif').convert_alpha())
