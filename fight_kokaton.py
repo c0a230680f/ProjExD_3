@@ -141,7 +141,7 @@ class Bomb:
         screen.blit(self.img, self.rct)
 
 
-class Score:
+class Score:  # 追加機能1
     """
     スコア表示に関するクラス
     """
